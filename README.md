@@ -7,9 +7,9 @@
 ---
 
 ## Setup 🏗
-npm i 
-npm run prisma generate
-npm run dev
+`npm i`
+`npm run prisma generate`
+`npm run dev`
 
 ## Testing
 ### Playwright
