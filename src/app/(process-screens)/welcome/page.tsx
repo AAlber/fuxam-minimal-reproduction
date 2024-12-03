@@ -9,7 +9,7 @@ export default async function WelcomePage({
 }: {
   params: { lang: Language };
   searchParams: { redirect_url?: string };
-}) {
+  }) {
 
   return (
     <>

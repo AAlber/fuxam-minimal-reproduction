@@ -81,7 +81,7 @@ const isProtectedRoute = createRouteMatcher([
   "/(.*)/switch-institution(.*)",
   "/(.*)/invite(.*)",
   "/(.*)/no-organization(.*)",
-  
+
 ]);
 
 const isIgnoredRoute = createRouteMatcher([
@@ -136,26 +136,6 @@ const doubleLocaleRegex = new RegExp(`/(en|de)/(en|de)/`, "g");
 /**
  * This function handles redirects based on the pathname and locale.
  *
- * It first checks if the pathname is missing a locale and not an API path.
- * If both conditions are met, it adjusts the pathname and redirects the request.
- *
- * If the pathname is not missing a locale, it checks if there's no page after the locale.
- * If there's no page after the locale, it redirects the request to the dashboard home.
- *
- * If the pathname is a dashboard path and needs adjustment, it redirects the request to the dashboard home.
- *
- * If the pathname is missing a locale and not an API path, it redirects the request.
- *
- * @param {Object} auth - The authentication object.
- * @param {NextRequest} request - The NextRequest object.
- * @param {string} pathname - The pathname of the request.
- * @param {URLSearchParams} searchParams - The search parameters of the request.
- * @param {string} locale - The locale of the request.
- * @returns {Promise<NextResponse>} A promise that resolves to a NextResponse object.
- */
-/**
- * This function handles redirects based on the pathname and locale.
- *
  * @param {Object} auth - The authentication object.
  * @param {NextRequest} request - The NextRequest object.
  * @param {string} pathname - The pathname of the request.
@@ -182,114 +162,11 @@ async function handleRedirect(
       return NextResponse.redirect(new URL(redirectUrl, request.url));
     } catch (e) {
       debugLog("Invalid redirect URL:", redirectUrl);
-      redirectUrl = `/${locale}/dashboard/home`; // fallback to dashboard/home if the redirectUrl is null / undefined !
+      return NextResponse.next();
     }
   }
 
-  // Check if the pathname is missing the determined locale
-  const pathnameIsMissingLocale =
-    !pathname.startsWith(`/${locale}/`) && pathname !== `/${locale}`;
-  // Check if the pathname has the wrong locale
-  const pathnameHasWrongLocale = pathname.startsWith(
-    `/${locale === "en" ? "de" : "en"}/`,
-  );
-
-  // double locale examples: /en/en/dashboard/home, /de/de/dashboard/home, /de/en/dashboard/home, /en/de/dashboard/home
-  const pathnameHasDoubleLocale = doubleLocaleRegex.test(pathname);
-
-  // Check if the pathname is an API path
-  const pathnameIsAPI = pathname.startsWith("/api");
-
-  // If the pathname is missing the determined locale and not an API path, adjust the pathname and redirect the request
-  if (pathnameIsMissingLocale && !pathnameHasWrongLocale && !pathnameIsAPI) {
-    debugLog("Redirecting to new pathname with locale: ", pathname);
-    const newPathname = `/${locale}${
-      pathname.startsWith("/") ? "" : "/"
-    }${pathname}`;
-    return NextResponse.redirect(
-      new URL(
-        newPathname + (searchParams ? `?${searchParams.toString()}` : ""),
-        request.url,
-      ),
-    );
-  }
-
-  // If the pathname has the wrong locale, adjust the pathname and redirect the request
-  if (pathnameHasWrongLocale && !pathnameIsAPI) {
-    debugLog("Redirecting to correct locale: ", locale);
-    const newPathname = `/${locale}${pathname.substring(3)}`;
-    return NextResponse.redirect(
-      new URL(
-        newPathname + (searchParams ? `?${searchParams.toString()}` : ""),
-        request.url,
-      ),
-    );
-  }
-
-  // If the pathname has a double locale, remove double locale and set the correct locale
-  if (pathnameHasDoubleLocale && !pathnameIsAPI) {
-    debugLog("Double locale detected, Redirecting to correct locale: ", locale);
-    const newPathname = pathname.replace(doubleLocaleRegex, `/${locale}/`);
-    return NextResponse.redirect(
-      new URL(
-        newPathname + (searchParams ? `?${searchParams.toString()}` : ""),
-        request.url,
-      ),
-    );
-  }
-  // Get the last path segment
-  const lastPathSegment = pathname.split("/").pop();
-
-  // Check if there's no page after the locale
-  const noPageAfterLocale = !lastPathSegment || lastPathSegment === locale;
-
-  // Check if the pathname is a dashboard path
-  const pathnameIsDashboard = pathname.includes("/dashboard/home");
-
-  // Check if the dashboard path needs adjustment
-  const dashboardPathNeedsAdjustment =
-    pathnameIsDashboard &&
-    pathname !== `/${locale}/dashboard/home/${auth().userId}`;
-
-  // If there's no page after the locale or the dashboard path needs adjustment, redirect the request to the dashboard home
-  if (noPageAfterLocale || dashboardPathNeedsAdjustment) {
-    const userId = auth().userId;
-    debugLog("Redirecting to dashboard home: UserID:", userId);
-    if (userId) {
-      const newPathname = `/${locale}/dashboard/home/${userId}`;
-
-      const url = new URL(
-        newPathname + (searchParams ? `?${searchParams.toString()}` : ""),
-        origin,
-      );
-
-      return NextResponse.redirect(url);
-    }
-
-    debugLog("UserId is null; Redirecting to welcome page");
-
-    const url = new URL(`/${locale}/welcome`, origin);
-    const originalUrl = new URL(request.url);
-    let pathnameAndSearch =
-      originalUrl.pathname +
-      (originalUrl.search ? `?${originalUrl.search}` : "");
-
-    pathnameAndSearch = pathnameAndSearch.replace("/" + locale, "");
-
-    if (!!pathnameAndSearch) {
-      url.searchParams.append("redirect_url", pathnameAndSearch);
-    }
-
-    return NextResponse.redirect(url);
-  }
-
-  // If the pathname is missing a locale and not an API path, redirect the request
-  if (pathnameIsMissingLocale && !pathnameIsAPI) {
-    debugLog("Redirecting to pathname:", pathname);
-    return NextResponse.redirect(new URL(pathname, request.url));
-  }
-
-  return NextResponse.next(request.url);
+  return NextResponse.next();
 }
 
 /**
@@ -311,8 +188,7 @@ async function handleSignIn(
   if (readyForRedirect) {
     debugLog("Sign-in finished, redirecting to: ", redirectUrl);
     if (!redirectUrl || redirectUrl === "null") {
-      redirectUrl = `/${locale}/dashboard/home`;
-      debugLog("Redirect URL was null, falling back to:", redirectUrl);
+      return NextResponse.next();
     }
     return NextResponse.redirect(new URL(redirectUrl, request.url));
   }
