@@ -1,0 +1,84 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
+    "target": "es2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "removeComments": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitAny": false,
+    // https://docs.sentry.io/platforms/node/sourcemaps/uploading/typescript
+    "sourceMap": true,
+    "inlineSources": true,
+    "sourceRoot": "/",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.cjs",
+    "**/*.mjs",
+    "src/app/**/*.ts",
+    "src/app/**/*.tsx",
+    "src/app/**/*.cjs",
+    "src/app/**/*.mjs",
+    "src/app/misc/singletons/prisma.ts",
+    "next.config.js",
+    ".next/types/**/*.ts",
+    "src/app/misc/singletons/cache-redis.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    ".next",
+    "public",
+    "src/pages_backup",
+    "src/components",
+    "src/client-functions",
+    "src/file-handlers",
+    "src/utils",
+    "src/zustand",
+    "src/translations/*.json",
+    "src/components/loading-indicator.js",
+    "src/components/loading-spinner.js",
+    "src/components/university-selector.ts",
+    "src/components/popups/settings/institutions.tsx",
+    "src/components/popups/institution-selector/main-frame.js",
+    "src/components/slate/types.d.ts",
+    "src/app/components/deprecated/workbench-deprecated/navigation/menu/menu",
+    "src/components/toaster/example.readme",
+    "src/pages_backup/api/token.js",
+    "src/pages_backup/verify/institution/[token].js",
+    "src/pages_backup/_error.js",
+    "src/pages_backup/api/institutions/index.js",
+    "src/pages_backup/api/api.ts",
+    "src/pages_backup/onboarding",
+    "src/pages_backup/api/tasks/task-document",
+    "src/app/api/access-passes",
+    "playwright/.auth/seed-main.ts",
+    "src/server/functions/translate.js",
+    "translationFunc.js",
+    "./cypress.config.ts",
+    "__tests__",
+    "__mocks__",
+    "cypress"
+  ]
+}
