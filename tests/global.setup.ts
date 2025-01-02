@@ -2,9 +2,10 @@ import { clerk, clerkSetup, setupClerkTestingToken } from "@clerk/testing/playwr
 import { FullConfig, test as setup } from "@playwright/test";
 import path from "path";
 import fs from 'fs/promises';
+import { testRequest } from "./helpers";
 
 const testDataFile = path.join(__dirname, '../playwright/.auth/test-data.json');
-
+setup.describe.configure({ mode: "serial" });
 setup("global setup", async () => {
   await clerkSetup();
 });
@@ -24,19 +25,19 @@ setup("authenticate", async ({ page }) => {
     },
   });
   await page.goto("/");
-  await page.waitForURL(/.*dashboard.*/, { timeout: 30000 });
 
   
   await page.context().storageState({ path: authFile });
 
+  await testRequest(page);
 
-  const response = await page.request.post('http://localhost:3000/api/testing/create-trial-institution-and-add-user', {
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  });
-  const data = await response.json();
+  // const response = await page.request.post('http://localhost:3000/api/testing/create-trial-institution-and-add-user', {
+  //   headers: {
+  //     'Content-Type': 'application/json'
+  //   }
+  // });
+  // const data = await response.json();
   
   // Store the layerId in a file
-  await fs.writeFile(testDataFile, JSON.stringify({ layerId: data.layerId }));
+  // await fs.writeFile(testDataFile, JSON.stringify({ layerId: data.layerId }));
 });

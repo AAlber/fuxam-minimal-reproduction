@@ -26,8 +26,8 @@
     "cypress:open": "CYPRESS_TEST_MODE=true doppler run -- cypress open",
     "prepare": "husky install",
     "test:e2e": "playwright test --config=playwright.config.ts",
-    "test:e2e:ui": "doppler run -- playwright test --ui --config=playwright.config.ts",
-    "test:e2e:debug": "doppler run -- playwright test --debug --config=playwright.config.ts"
+    "test:e2e:ui": "playwright test --ui --config=playwright.config.ts",
+    "test:e2e:debug": "playwright test --debug --config=playwright.config.ts"
   },
   "prisma": {
     "seed": "npx tsx prisma/seed.ts"
@@ -204,7 +204,7 @@
     "mime": "^4.0.1",
     "mini-svg-data-uri": "^1.4.4",
     "moment-timezone": "^0.5.45",
-    "next": "^14.2.11",
+    "next": "^14.2.13",
     "next-i18next": "^15.3.1",
     "next-nprogress-bar": "^2.3.13",
     "next-themes": "^0.2.1",

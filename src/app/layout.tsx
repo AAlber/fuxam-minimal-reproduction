@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { Inter } from "next/font/google";
 import "../../styles/globals.css";
 import { AuthGate } from "./providers/user-provider/auth-gate";
+import { ClerkProvider } from "@clerk/nextjs";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,7 +24,10 @@ export default async function RootLayout({
     <html className={inter.className}>
       <SpeedInsights />
       <Analytics />
-      <AuthGate>{children}</AuthGate>
+
+      <ClerkProvider>
+        <AuthGate>{children}</AuthGate>
+      </ClerkProvider>
     </html>
   );
 }

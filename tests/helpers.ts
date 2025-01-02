@@ -28,6 +28,20 @@ export async function uploadFile(
   );
 }
 
+export async function testRequest(page: Page) {
+  const response = await page.request.post('http://localhost:3000/api/test-request', {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  const data = await response.json();
+  if (!data.userId) {
+    throw new Error("Test user not found");
+  }
+  return data;
+}
+
+
 export async function uploadFiles(
   page: Page,
   // selector: string,
